@@ -1,7 +1,7 @@
 from docxtpl import DocxTemplate
 import json
 
-def generate_docx():
+def generate_docx(file_path):
     # Load template
     doc = DocxTemplate("templates/cv_template.docx")
 
@@ -13,6 +13,6 @@ def generate_docx():
     doc.render(context)
 
     # Save the filled CV
-    doc.save("output_files/docx/filled_cv.docx")
+    doc.save(file_path)
 
 #generate_docx()

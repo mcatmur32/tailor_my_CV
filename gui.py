@@ -1,29 +1,41 @@
-from PyQt5.QtWidgets import QApplication, QStackedWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget
+from PyQt5.QtSql import QSqlDatabase
+
 from app_pages.WelcomePage import WelcomePage
 from app_pages.NewApplicationPage import NewApplicationPage
 from app_pages.ManageApplicationsPage import ManageApplicationsPage
 
-import sys
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Multi-Page App")
 
+        # Setup database
+        self.db = QSqlDatabase.addDatabase("QSQLITE")
+        self.db.setDatabaseName("database/my_database.db")
+        if not self.db.open():
+            print("Failed to connect to database")
 
+        # Setup stacked widget
+        self.stacked_widget = QStackedWidget()
+        self.setCentralWidget(self.stacked_widget)
 
-app = QApplication(sys.argv)
+        # Create pages
+        self.welcome_page = WelcomePage()
+        self.new_application_page = NewApplicationPage()
+        self.manage_applications_page = ManageApplicationsPage(self.db)
 
-stack = QStackedWidget()
-welcome_page = WelcomePage()
-new_application_page = NewApplicationPage()
-manage_applications_page = ManageApplicationsPage()
+        # Add pages to stacked widget
+        self.stacked_widget.addWidget(self.welcome_page)
+        self.stacked_widget.addWidget(self.new_application_page)
+        self.stacked_widget.addWidget(self.manage_applications_page)
 
-stack.addWidget(welcome_page)  # index 0
-stack.addWidget(new_application_page)  # index 1
-stack.addWidget(manage_applications_page) # index 2
+        # Connect buttons
+        self.welcome_page.button_new_application.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
+        self.welcome_page.button_manage_applications.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
 
-# Connect buttons
-welcome_page.button_new_application.clicked.connect(lambda: stack.setCurrentIndex(1))
-welcome_page.button_manage_applications.clicked.connect(lambda: stack.setCurrentIndex(2))
+app = QApplication([])
+window = MainWindow()
+window.show()
+app.exec_()
 
-stack.setWindowTitle("Stacked Page App")
-stack.setGeometry(100, 100, 300, 200)
-stack.show()
-
-sys.exit(app.exec_())
