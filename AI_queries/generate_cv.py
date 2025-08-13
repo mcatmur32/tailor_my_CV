@@ -47,7 +47,7 @@ def generate_cv(job_summary):
         projects: list[Project]
         skills: Skills
 
-    with open('master_cv.json', 'r', encoding="utf-8") as f:
+    with open('inputs/master_cv.json', 'r', encoding="utf-8") as f:
         master_cv = json.load(f)
 
     master_cv_str = json.dumps(master_cv)
