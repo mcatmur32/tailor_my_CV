@@ -1,61 +1,49 @@
 from openai import OpenAI
 from pydantic import BaseModel, Field
-#from typing import Annotated
-import json
 import os
 
-def generate_cv(job_summary):
+class Education(BaseModel):
+    degree: str
+    institution: str
+    location: str
+    start_date: str
+    end_date: str
+    grade: str
+    description: list[str] = Field(..., min_length=3, max_length=5)
+
+class WorkExperience(BaseModel):
+    title: str
+    company: str
+    location: str
+    start_date: str
+    end_date: str
+    description: list[str] = Field(..., min_length=3, max_length=5)
+
+class Project(BaseModel):
+    title: str
+    start_date: str
+    end_date: str
+    description: list[str] = Field(..., min_length=3, max_length=5)
+
+class Skills(BaseModel):
+    languages: list[str]
+    libraries: list[str]
+    tools: list[str]
+    soft_skills: list[str]
+    interests: list[str]
+
+class CV(BaseModel):
+    profile: str
+    education: list[Education]
+    work_experience: list[WorkExperience]
+    projects: list[Project]
+    skills: Skills
+
+def generate_cv(job_summary: str, master_cv: str) -> CV:
 
     client = OpenAI(
     api_key = os.getenv("OPENAI_API_KEY")
     )
-
-    class Education(BaseModel):
-        degree: str
-        institution: str
-        location: str
-        start_date: str
-        end_date: str
-        grade: str
-        description: list[str] = Field(..., min_length=3, max_length=5)
-
-    class WorkExperience(BaseModel):
-        title: str
-        company: str
-        location: str
-        start_date: str
-        end_date: str
-        description: list[str] = Field(..., min_length=3, max_length=5)
-
-    class Project(BaseModel):
-        title: str
-        start_date: str
-        end_date: str
-        description: list[str] = Field(..., min_length=3, max_length=5)
-
-    class Skills(BaseModel):
-        languages: list[str]
-        libraries: list[str]
-        tools: list[str]
-        soft_skills: list[str]
-        interests: list[str]
-
-    class CV(BaseModel):
-        profile: str
-        education: list[Education]
-        work_experience: list[WorkExperience]
-        projects: list[Project]
-        skills: Skills
-
-    with open('inputs/master_cv.json', 'r', encoding="utf-8") as f:
-        master_cv = json.load(f)
-
-    master_cv_str = json.dumps(master_cv)
-    #job_summary_str = json.dumps(job_summary)
-    job_summary_str = job_summary
-
-    # prompt = "Based on these 3 most important responsibilities from the job description, please tailor my CV for this position. Rewrite bullet points using the structure: 'Accomplished X by the measure Y that resulted in Z'. Do not make information up. Ensure it is compatible with latex (i.e. '\%', not just '%' etc). Here's my CV (in .json format):\n\n" + master_cv_str
-    # prompt = "Based on the summarised job description below, please tailor my CV for this position. You may exclude anything you deem irrelevant, as well as slightly re-word and re-order descriptions in line with the job summary, but crucially DO NOT MAKE INFORMATION UP! Also, provide a detailed summary of changes made to the original. Here is the job summary: \n\n" + job_summary_str + "\n\nAnd here is my CV:\n\n" + master_cv_str
 
     system_prompt = f"""
         You are an expert CV writer with over 20 years of experience helping physics graduates tailor their CVs for industry roles in the UK. Your objective is to rewrite a candidate's CV based on a provided job description summary in order to maximise relevance, professionalism, and ATS (Applicant Tracking System) compatibility.
@@ -96,12 +84,12 @@ def generate_cv(job_summary):
         ---
 
         ### 📌 Job Summary:
-        {job_summary_str}
+        {job_summary}
 
         ---
 
         ### 📄 Original CV:
-        {master_cv_str}
+        {master_cv}
 
         """
 
@@ -119,7 +107,5 @@ def generate_cv(job_summary):
 
     # Get the output
     output = response.output_parsed
-
-    print(output)
 
     return output

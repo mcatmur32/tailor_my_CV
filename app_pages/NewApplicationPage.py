@@ -2,9 +2,11 @@ from PyQt5.QtWidgets import QLineEdit, QTextEdit, QWidget, QPushButton, QVBoxLay
 
 from AI_queries.generate_cv import generate_cv
 from AI_queries.summarise_job import summarise_job
+from AI_queries.generate_cover_letter import generate_cover_letter
 from file_generation.generate_docx import generate_docx
 
 import sqlite3
+import json
 
 class NewApplicationPage(QWidget):
     def __init__(self):
@@ -27,6 +29,8 @@ class NewApplicationPage(QWidget):
         checkbox_layout = QHBoxLayout()
         self.CV_checkbox = QCheckBox("CV")
         self.cover_letter_checkbox = QCheckBox("Cover Letter")
+        self.CV_checkbox.setChecked(True)
+        self.cover_letter_checkbox.setChecked(True)
         checkbox_layout.addWidget(self.CV_checkbox)
         checkbox_layout.addWidget(self.cover_letter_checkbox)
         main_layout.addLayout(checkbox_layout, stretch=1)
@@ -39,25 +43,30 @@ class NewApplicationPage(QWidget):
         self.setLayout(main_layout)
 
     def process_text(self):
-        self.title = "Test"
+        self.title = self.job_title_textbox.text()
         self.job_description = self.job_desc_textbox.toPlainText()
         self.version = 1
-        self.job_summary = summarise_job(self.job_description)
 
-        #print(self.job_summary)
+        self.job_summary = summarise_job(self.job_description)
+        print(self.job_summary)
         print("\n\n")
 
-        self.new_CV = generate_cv(self.job_summary)
+        with open('inputs/master_cv.json', 'r', encoding="utf-8") as f:
+            self.master_cv = json.dumps(json.load(f))
 
-        with open("output_files/json/output_cv.json", "w", encoding="utf-8") as f:
-            f.write(self.new_CV.model_dump_json())
+        if self.CV_checkbox.isChecked():
+            self.new_CV = generate_cv(self.job_summary, self.master_cv)
+            print(self.new_CV)
+            print("\n\n")
 
-        
+            with open("output_files/json/output_cv.json", "w", encoding="utf-8") as f:
+                f.write(self.new_CV.model_dump_json())
 
-        self.submit_to_database()
+        if self.cover_letter_checkbox.isChecked():
+            self.new_cover_letter = generate_cover_letter(self.job_summary, self.master_cv)
+            print(self.new_cover_letter)
 
 
-    def submit_to_database(self):
         # Connect to the database
         conn = sqlite3.connect('database/my_database.db')
         cursor = conn.cursor()
@@ -86,10 +95,4 @@ class NewApplicationPage(QWidget):
         generate_docx(file_path)
 
         cursor.execute("UPDATE job_applications SET CV_path = ? WHERE id = ?", (file_path, entry_id))
-
-        
-        
         conn.commit()
-        print("success")
-
-        #conn.close()

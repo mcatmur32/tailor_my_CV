@@ -33,6 +33,7 @@ class MainWindow(QMainWindow):
         # Connect buttons
         self.welcome_page.button_new_application.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
         self.welcome_page.button_manage_applications.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
+        self.new_application_page.submit_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
 
 app = QApplication([])
 window = MainWindow()
