@@ -1,12 +1,12 @@
 from docxtpl import DocxTemplate
 import json
 
-def generate_docx(file_path):
+def generate_docx(file_path: str, template_path: str, json_path: str) -> DocxTemplate:
     # Load template
-    doc = DocxTemplate("templates/cv_template.docx")
+    doc = DocxTemplate(template_path)
 
     # Load your JSON data
-    with open("output_files/json/output_cv.json", "r", encoding="utf-8") as f:
+    with open(json_path, "r", encoding="utf-8") as f:
         context = json.load(f)
 
     # Render into the template
@@ -14,5 +14,7 @@ def generate_docx(file_path):
 
     # Save the filled CV
     doc.save(file_path)
+
+    return doc
 
 #generate_docx()

@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget
-from PyQt5.QtSql import QSqlDatabase
+from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QTabWidget
+
+from database.Database import Database
 
 from app_pages.WelcomePage import WelcomePage
 from app_pages.NewApplicationPage import NewApplicationPage
@@ -8,35 +9,40 @@ from app_pages.ManageApplicationsPage import ManageApplicationsPage
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Multi-Page App")
+        self.setWindowTitle("Tailor my CV App")
 
         # Setup database
-        self.db = QSqlDatabase.addDatabase("QSQLITE")
-        self.db.setDatabaseName("database/my_database.db")
-        if not self.db.open():
-            print("Failed to connect to database")
+        self.db = Database("database/applications_database")
 
-        # Setup stacked widget
-        self.stacked_widget = QStackedWidget()
-        self.setCentralWidget(self.stacked_widget)
+        # Setup Tabbed widgets
+        self.tabs = QTabWidget()
+        self.setCentralWidget(self.tabs)
 
         # Create pages
-        self.welcome_page = WelcomePage()
-        self.new_application_page = NewApplicationPage()
+        self.new_application_page = NewApplicationPage(self.db)
         self.manage_applications_page = ManageApplicationsPage(self.db)
 
-        # Add pages to stacked widget
-        self.stacked_widget.addWidget(self.welcome_page)
-        self.stacked_widget.addWidget(self.new_application_page)
-        self.stacked_widget.addWidget(self.manage_applications_page)
+        # Add pages to tab widget
+        self.tabs.addTab(self.new_application_page, "New Application")
+        self.tabs.addTab(self.manage_applications_page, "Manage Applications")
 
-        # Connect buttons
-        self.welcome_page.button_new_application.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
-        self.welcome_page.button_manage_applications.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
-        self.new_application_page.submit_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
+        self.tabs.currentChanged.connect(self.on_tab_changed)
 
-app = QApplication([])
-window = MainWindow()
-window.show()
-app.exec_()
+    def on_tab_changed(self, index):
+        # Find which widget the tab index belongs to
+        current_widget = self.tabs.widget(index)
+
+        # If it's the ManageApplications page, refresh the table
+        if isinstance(current_widget, ManageApplicationsPage):
+            current_widget.load_data()  # Make sure this method re-queries DB
+
+if __name__ == "__main__":
+    import sys, traceback
+    try:
+        app = QApplication(sys.argv)
+        window = MainWindow()
+        window.show()
+        sys.exit(app.exec_())
+    except Exception:
+        traceback.print_exc()
 

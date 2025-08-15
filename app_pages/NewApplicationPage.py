@@ -5,12 +5,16 @@ from AI_queries.summarise_job import summarise_job
 from AI_queries.generate_cover_letter import generate_cover_letter
 from file_generation.generate_docx import generate_docx
 
+from database.Database import Database
+
 import sqlite3
 import json
+import os
 
 class NewApplicationPage(QWidget):
-    def __init__(self):
+    def __init__(self, db: Database):
         super().__init__()
+        self.db = db
         self.setWindowTitle("New Application Page")
 
         main_layout = QVBoxLayout()
@@ -19,6 +23,11 @@ class NewApplicationPage(QWidget):
         self.job_title_textbox = QLineEdit()
         self.job_title_textbox.setPlaceholderText("Add job title here")
         main_layout.addWidget(self.job_title_textbox)
+
+        # Single line job  textbok
+        self.job_deadline_textbox = QLineEdit()
+        self.job_deadline_textbox.setPlaceholderText("Add submission deadline here. Type 'rolling' if no deadline")
+        main_layout.addWidget(self.job_deadline_textbox)
 
         # Multi-line job description textbox
         self.job_desc_textbox = QTextEdit()
@@ -37,14 +46,18 @@ class NewApplicationPage(QWidget):
 
         # Button
         self.submit_button = QPushButton("Submit")
-        self.submit_button.clicked.connect(self.process_text)
+        self.submit_button.clicked.connect(self.process_submission)
         main_layout.addWidget(self.submit_button, stretch=1)
 
         self.setLayout(main_layout)
 
-    def process_text(self):
-        self.title = self.job_title_textbox.text()
+    def process_submission(self):
+        self.job_title = self.job_title_textbox.text()
+        self.job_company = "Catmur Corp."
+        self.job_deadline = self.job_deadline_textbox.text()
         self.job_description = self.job_desc_textbox.toPlainText()
+
+        self.status = "Draft"
         self.version = 1
 
         self.job_summary = summarise_job(self.job_description)
@@ -55,44 +68,42 @@ class NewApplicationPage(QWidget):
             self.master_cv = json.dumps(json.load(f))
 
         if self.CV_checkbox.isChecked():
-            self.new_CV = generate_cv(self.job_summary, self.master_cv)
+            self.new_CV = generate_cv(json.dumps(self.job_summary.model_dump(), indent=2), self.master_cv)
             print(self.new_CV)
             print("\n\n")
-
-            with open("output_files/json/output_cv.json", "w", encoding="utf-8") as f:
-                f.write(self.new_CV.model_dump_json())
 
         if self.cover_letter_checkbox.isChecked():
             self.new_cover_letter = generate_cover_letter(self.job_summary, self.master_cv)
             print(self.new_cover_letter)
+            print("\n\n")
 
 
-        # Connect to the database
-        conn = sqlite3.connect('database/my_database.db')
-        cursor = conn.cursor()
+        self.job_id = self.db.new_entry(self.job_company, self.job_title, self.job_deadline, self.status)
 
-        # Create a table
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS job_applications (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                company TEXT NOT NULL,
-                title TEXT NOT NULL,
-                CV_path TEXT,
-                CV_version INTEGER,
-                cover_letter_path TEXT,
-                cover_letter_version INTEGER,
-                deadline TEXT,
-                status INTEGER
-                
-            )
-        ''')
 
-        cursor.execute("INSERT INTO job_applications (company, title, CV_path, CV_version, cover_letter_path, cover_letter_version, deadline, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", ("My Inc.", self.title, "", self.version, "", 1, "TBC", 0))
-        entry_id = cursor.lastrowid
+        self.save_files()
+        
 
-        file_path = rf"C:\Users\maxca\Desktop\tailor_my_CV\output_files\docx\CV_{self.title}_{entry_id}_V{self.version}.docx"
+    def save_files(self):
+        self.folder_path_json = rf"C:\Users\maxca\Desktop\tailor_my_CV\applications\{self.job_id}_{self.job_title}_{self.job_company}\json"
+        self.folder_path_docx = rf"C:\Users\maxca\Desktop\tailor_my_CV\applications\{self.job_id}_{self.job_title}_{self.job_company}\docx"
 
-        generate_docx(file_path)
+        os.makedirs(self.folder_path_json, exist_ok=True)
+        os.makedirs(self.folder_path_docx, exist_ok=True)
 
-        cursor.execute("UPDATE job_applications SET CV_path = ? WHERE id = ?", (file_path, entry_id))
-        conn.commit()
+        self.file_path_CV_json = rf"{self.folder_path_json}\CV_{self.job_title}_{self.job_id}_V{self.version}.json"
+        self.file_path_JobDescription_json = rf"{self.folder_path_json}\JobDescription_{self.job_title}_{self.job_id}_V{self.version}.json"
+        self.file_path_CV_docx = rf"{self.folder_path_docx}\CV_{self.job_title}_{self.job_id}_V{self.version}.docx"
+
+        with open(self.file_path_JobDescription_json, "w", encoding="utf-8") as f:
+            f.write(self.job_summary.model_dump_json())
+
+        with open(self.file_path_CV_json, "w", encoding="utf-8") as f:
+            f.write(self.new_CV.model_dump_json())
+
+        generate_docx(self.file_path_CV_docx, "templates/cv_template.docx", self.file_path_CV_json)
+
+        self.db.add_file_path(self.job_id, self.file_path_CV_docx)
+    
+
+

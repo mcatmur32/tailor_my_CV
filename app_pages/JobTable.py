@@ -2,7 +2,6 @@ import os
 import sqlite3
 from datetime import date
 
-#from JobTable import JobTable
 from database.Database import Database
 
 from PyQt5.QtCore import Qt, QUrl
@@ -30,7 +29,7 @@ class JobTable(QTableWidget):
       4: CV File (QPushButton)
       5: Delete (QPushButton)
     """
-    HEADERS = ["Company", "Role", "Deadline", "Status", "CV File Path", "CV File", "Delete"]
+    HEADERS = ["Company", "Role", "Deadline", "Status", "CV File", "Delete"]
     
 
     def __init__(self, db: Database, parent=None):
@@ -65,7 +64,7 @@ class JobTable(QTableWidget):
             role = rec["role"]
             deadline = rec["deadline"]
             status = rec["status"]
-            CV_file_path = rec["CV_file_path"]
+            CV_file_path = rec["CV_file_path"] or ""
 
             # Plain text cells
             self.setItem(r, 0, QTableWidgetItem(company))
@@ -87,9 +86,9 @@ class JobTable(QTableWidget):
 
             # File (just display basename)
             # basename = os.path.basename(CV_file_path) if CV_file_path else ""
-            file_item = QTableWidgetItem(CV_file_path)
-            file_item.setToolTip(CV_file_path)  # hover to see full path
-            self.setItem(r, 4, file_item)
+            # file_item = QTableWidgetItem(basename)
+            # file_item.setToolTip(CV_file_path)  # hover to see full path
+            # self.setItem(r, 4, file_item)
 
             # Open button
             open_btn = QPushButton("Open CV")
@@ -97,7 +96,7 @@ class JobTable(QTableWidget):
             open_btn.clicked.connect(
                 lambda _, b=open_btn: self.on_open_clicked(b.property("app_id"))
             )
-            self.setCellWidget(r, 5, open_btn)
+            self.setCellWidget(r, 4, open_btn)
 
             # Delete button
             del_btn = QPushButton("Delete")
@@ -105,7 +104,7 @@ class JobTable(QTableWidget):
             del_btn.clicked.connect(
                 lambda _, b=del_btn: self.on_delete_clicked(b.property("app_id"))
             )
-            self.setCellWidget(r, 6, del_btn)
+            self.setCellWidget(r, 5, del_btn)
 
         # Cosmetic: align text columns a bit nicer
         for c in (0, 1, 2, 4):
@@ -121,7 +120,7 @@ class JobTable(QTableWidget):
         # Here we keep it quiet to avoid spamming dialogs.
 
     def on_open_clicked(self, app_id: int):
-        path = self.db.get_CV_file_path(app_id)
+        path = self.db.get_file_path(app_id) or ""
         if not path or not os.path.exists(path):
             QMessageBox.warning(self, "File not found",
                                 "No file found for this entry.\n\nPath:\n" + (path or "<empty>"))
@@ -137,82 +136,3 @@ class JobTable(QTableWidget):
         if reply == QMessageBox.Yes:
             self.db.delete(app_id)
             self.load_data()  # refresh UI
-
-class ManageApplicationsPage(QWidget):
-    def __init__(self, db: Database):
-        super().__init__()
-        self.db = db
-
-        self.table = JobTable(db)
-        info = QLabel("Tip: change Status via the dropdown; use Open/Delete per row.")
-        info.setStyleSheet("color: gray;")
-
-        layout = QVBoxLayout()
-        layout.addWidget(info)
-        layout.addWidget(self.table)
-        self.setLayout(layout)
-
-    def load_data(self):
-        self.table.load_data()
-
-
-"""
-from PyQt5.QtWidgets import QWidget, QTableView, QVBoxLayout, QComboBox, QStyledItemDelegate, QStyleOptionButton, QStyle, QApplication
-from PyQt5.QtSql import QSqlTableModel
-from PyQt5.QtCore import Qt, QRect
-from PyQt5.QtGui import QPainter
-import os
-class ManageApplicationsPage(QWidget):
-    def __init__(self, db):
-        super().__init__()
-        
-        layout = QVBoxLayout()
-
-        # Table view
-        self.table_view = QTableView()
-        self.model = QSqlTableModel(db=db)
-        self.model.setTable("job_applications")
-        self.model.select()
-        self.table_view.setModel(self.model)
-
-        # Only prevent editing for non-status columns
-        self.table_view.setEditTriggers(QTableView.DoubleClicked)  
-
-        # Delegates
-        self.table_view.setItemDelegateForColumn(3, CVButtonDelegate(self.table_view))
-
-        # Optional: resize columns
-        self.table_view.resizeColumnsToContents()
-
-        # Handle clicks for button
-        self.table_view.clicked.connect(self.handle_click)
-
-        layout.addWidget(self.table_view)
-        self.setLayout(layout)
-
-    def handle_click(self, index):
-        if index.column() == 3:  # CV_path column
-            file_path = index.data()
-            if file_path and os.path.exists(file_path):
-                os.startfile(file_path)  # Windows
-            else:
-                print("File not found:", file_path)
-
-
-# Button-like delegate for CV column
-class CVButtonDelegate(QStyledItemDelegate):
-    def paint(self, painter, option, index):
-        button_option = QStyleOptionButton()
-        button_option.rect = option.rect
-        button_option.text = "Open CV"
-        if option.state & QStyle.State_Selected:
-            button_option.state = QStyle.State_Enabled | QStyle.State_Selected
-        else:
-            button_option.state = QStyle.State_Enabled
-
-        QApplication.style().drawControl(QStyle.CE_PushButton, button_option, painter)
-
-    def createEditor(self, parent, option, index):
-        return None  # No editor, click handled externally
-
-"""

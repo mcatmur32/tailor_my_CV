@@ -3,29 +3,31 @@ from pydantic import BaseModel
 import os
 import json
 
+# Defines the job summary json format outputted by the AI
+class JobDescriptor(BaseModel):
+    job_title: str
+    company_name: str
+    industry: str
+    location: str
+    essential_requirements: list[str]
+    preferred_requirements: list[str]
+    hard_skills: list[str]
+    soft_skills: list[str]
+    ATS_keywords: list[str]
+    key_responsibilities: list[str]
+    tools_and_technologies: list[str]
+    company_values: list[str]
+    tailoring_recommendations: list[str]
+
 # Reads in job description and summarises the key details into a json format
-def summarise_job (description):
+def summarise_job (description: str) -> JobDescriptor:
 
     # Connect to API
     client = OpenAI(
     api_key = os.getenv("OPENAI_API_KEY")
     )
 
-    # Defines the job summary json format outputted by the AI
-    class JobDescriptor(BaseModel):
-        job_title: str
-        company_name: str
-        industry: str
-        location: str
-        essential_requirements: list[str]
-        preferred_requirements: list[str]
-        hard_skills: list[str]
-        soft_skills: list[str]
-        ATS_keywords: list[str]
-        key_responsibilities: list[str]
-        tools_and_technologies: list[str]
-        company_values: list[str]
-        tailoring_recommendations: list[str]
+    
 
     # Prompt passed into the AI
     prompt = "Given the following job description, extract key information from it and return it in the format specified. \nUse natural language understanding to infer values, tone, responsibilities, and include recommended tailoring strategies even if not explicitly stated, as well as some ATS-friendly keywords/phrases someone should include in their CV when applying to this job. Here is the job description:\n\n" + description
@@ -64,9 +66,9 @@ def summarise_job (description):
     )
 
     # Get the output
-    output = response.output_parsed
+    job_summary = response.output_parsed
 
     # job_summary = output.json(indent=2)
-    job_summary = json.dumps(output.model_dump(), indent=2)
+    # job_summary = json.dumps(output.model_dump(), indent=2)
 
     return job_summary
