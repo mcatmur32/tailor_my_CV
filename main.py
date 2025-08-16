@@ -1,8 +1,7 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QTabWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget
 
 from database.Database import Database
 
-from app_pages.WelcomePage import WelcomePage
 from app_pages.NewApplicationPage import NewApplicationPage
 from app_pages.ManageApplicationsPage import ManageApplicationsPage
 
@@ -12,14 +11,14 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Tailor my CV App")
 
         # Setup database
-        self.db = Database("database/applications_database")
+        self.db = Database("database/applications_database.db")
 
         # Setup Tabbed widgets
         self.tabs = QTabWidget()
         self.setCentralWidget(self.tabs)
 
         # Create pages
-        self.new_application_page = NewApplicationPage(self.db)
+        self.new_application_page = NewApplicationPage(self.db, self.tabs)
         self.manage_applications_page = ManageApplicationsPage(self.db)
 
         # Add pages to tab widget
@@ -40,8 +39,12 @@ if __name__ == "__main__":
     import sys, traceback
     try:
         app = QApplication(sys.argv)
+
+        with open("app_pages/style.qss", "r") as f:
+            app.setStyleSheet(f.read())
+
         window = MainWindow()
-        window.show()
+        window.showMaximized()
         sys.exit(app.exec_())
     except Exception:
         traceback.print_exc()

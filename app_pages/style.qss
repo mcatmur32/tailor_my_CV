@@ -1,0 +1,15 @@
+QLineEdit, QTextEdit {
+    font-size: 12pt;       /* font size */
+    padding: 6px 8px;      /* vertical + horizontal padding */
+    border: 1px solid gray; /* optional border */
+    border-radius: 4px;     /* optional rounded corners */
+    min-height: 30px;       /* ensures vertical space */
+}
+
+QTextEdit {
+    font-size: 8pt;
+}
+
+QPushButton {
+    font-size: 12pt;
+}
