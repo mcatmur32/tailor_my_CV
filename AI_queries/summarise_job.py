@@ -1,20 +1,19 @@
 from openai import OpenAI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import os
-import json
 
 # Defines the job summary json format outputted by the AI
 class JobDescriptor(BaseModel):
-    job_title: str
-    company_name: str
-    industry: str
-    location: str
+    #job_title: str
+    #company_name: str
+    #industry: str
+    #location: str
     essential_requirements: list[str]
     preferred_requirements: list[str]
     hard_skills: list[str]
     soft_skills: list[str]
     ATS_keywords: list[str]
-    key_responsibilities: list[str]
+    key_responsibilities: list[str] = Field(..., min_length=3, max_length=3)
     tools_and_technologies: list[str]
     company_values: list[str]
     tailoring_recommendations: list[str]
@@ -35,7 +34,6 @@ def summarise_job (description: str) -> JobDescriptor:
     system_prompt = f"""
         You are an expert job description analyst with over 20 years of experience. You will be given a job description, and you must summarise it as follows:
 
-        - Include the core information: job title, company name, industry, and location.
         - All essential and preferred requirements for the job.
         - All the hard skills and soft skills required to do such a job.
         - Keywords in the job description that an Applicant Tracking System (ATS) would pick up on if applying to the job.
@@ -72,3 +70,4 @@ def summarise_job (description: str) -> JobDescriptor:
     # job_summary = json.dumps(output.model_dump(), indent=2)
 
     return job_summary
+

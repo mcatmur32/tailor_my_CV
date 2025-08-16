@@ -144,7 +144,12 @@ class SubmitWorker(QObject):
         # Get the AI job summary
         self.status_update.emit("Analysing job description...")
         self.progress.emit(10)
-        self.job_summary = summarise_job(self.job_data["description"])
+        self.job_summary = summarise_job(self.job_data["description"]).model_dump()
+        
+        # Merge the manually entered job data and the AI-inferred information
+        self.job_summary = {k: v for k, v in self.job_data.items() if k in ["title", "company", "deadline", "description"]} | self.job_summary
+
+        print(self.job_summary)
 
         # Open the Master CV file (will add file uploader to form later)
         with open('inputs/master_cv.json', 'r', encoding="utf-8") as f:
@@ -155,7 +160,7 @@ class SubmitWorker(QObject):
         if self.job_data["CV_checkbox"]:
             # Get the new AI CV
             self.status_update.emit("Tailoring CV...")
-            self.new_CV = generate_cv(json.dumps(self.job_summary.model_dump(), indent=2), self.master_cv)
+            self.new_CV = generate_cv(json.dumps(self.job_summary, indent=2), self.master_cv)
 
         # Perform if CL checkbox ticked
         if self.job_data["cover_letter_checkbox"]:
@@ -196,7 +201,7 @@ class SubmitWorker(QObject):
 
         # Write the job description json file to correct location
         with open(self.file_path_JobDescription_json, "w", encoding="utf-8") as f:
-            f.write(self.job_summary.model_dump_json())
+            f.write(json.dumps(self.job_summary, indent=2))
 
         # Write the new CV json file to correct location
         with open(self.file_path_CV_json, "w", encoding="utf-8") as f:

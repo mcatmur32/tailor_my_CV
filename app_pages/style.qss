@@ -1,4 +1,4 @@
-QLineEdit, QTextEdit {
+QLineEdit, QTextEdit, QTabWidget, QTableWidget {
     font-size: 12pt;       /* font size */
     padding: 6px 8px;      /* vertical + horizontal padding */
     border: 1px solid gray; /* optional border */
