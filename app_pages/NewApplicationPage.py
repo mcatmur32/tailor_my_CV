@@ -51,7 +51,7 @@ class NewApplicationPage(QWidget):
         self.cover_letter_checkbox = QCheckBox("Cover Letter")
         self.CV_checkbox.setChecked(True)
         self.cover_letter_checkbox.setChecked(False)
-        self.cover_letter_checkbox.setDisabled(True)
+        # self.cover_letter_checkbox.setDisabled(True)
         self.checkbox_layout.addWidget(self.CV_checkbox)
         self.checkbox_layout.addWidget(self.cover_letter_checkbox)
         self.layout.addLayout(self.checkbox_layout, stretch=1)
@@ -149,18 +149,37 @@ class SubmitWorker(QObject):
         # Merge the manually entered job data and the AI-inferred information
         self.job_summary = {k: v for k, v in self.job_data.items() if k in ["title", "company", "deadline", "description"]} | self.job_summary
 
-        print(self.job_summary)
-
         # Open the Master CV file (will add file uploader to form later)
         with open('inputs/master_cv.json', 'r', encoding="utf-8") as f:
             self.master_cv = json.dumps(json.load(f))
 
         self.progress.emit(50)
+
+        # Insert the new entry into the database, and get back the entry id (for file saving purposes)
+        self.job_id = self.db.new_entry(self.job_data["company"], self.job_data["title"], self.job_data["deadline"], self.job_data["status"])
+
+        # Write the job description json file to correct location
+        with open(self.get_file_path("JobDescription", "json"), "w", encoding="utf-8") as f:
+            f.write(json.dumps(self.job_summary, indent=2))
+
         # Perform if CV checkbox ticked
         if self.job_data["CV_checkbox"]:
             # Get the new AI CV
             self.status_update.emit("Tailoring CV...")
             self.new_CV = generate_cv(json.dumps(self.job_summary, indent=2), self.master_cv)
+
+            self.file_path_CV_json = self.get_file_path("CV", "json")
+            self.file_path_CV_docx = self.get_file_path("CV", "docx")
+
+            # Write the new CV json file to correct location
+            with open(self.file_path_CV_json, "w", encoding="utf-8") as f:
+                f.write(self.new_CV.model_dump_json())
+
+            # Generate word document template
+            generate_docx(self.file_path_CV_docx, "templates/cv_template.docx", self.file_path_CV_json)
+
+            # Update the database to include the link to the docx file (for button functionality)
+            self.db.add_file_path(self.job_id, self.file_path_CV_docx)
 
         # Perform if CL checkbox ticked
         if self.job_data["cover_letter_checkbox"]:
@@ -169,16 +188,24 @@ class SubmitWorker(QObject):
             self.progress.emit(75)
             self.new_cover_letter = generate_cover_letter(self.job_summary, self.master_cv)
 
-        # Insert the new entry into the database, and get back the entry id (for file saving purposes)
+            self.file_path_CL_json = self.get_file_path("CL", "json")
+            self.file_path_CL_docx = self.get_file_path("CL", "docx")
+
+            # Write the new CL json file to correct location
+            with open(self.file_path_CL_json, "w", encoding="utf-8") as f:
+                f.write(self.new_cover_letter.model_dump_json())
+
+            # Generate word document template
+            generate_docx(self.file_path_CL_docx, "templates/CL_template.docx", self.file_path_CL_json)
+
         self.status_update.emit("Saving...")
         self.progress.emit(90)
-        self.job_id = self.db.new_entry(self.job_data["company"], self.job_data["title"], self.job_data["deadline"], self.job_data["status"])
 
         # Save the files. Will allow different formats later
-        self.save_files()
+        # self.save_files()
 
         # Update the database to include the link to the docx file (for button functionality)
-        self.db.add_file_path(self.job_id, self.file_path_CV_docx)
+        # self.db.add_file_path(self.job_id, self.file_path_CV_docx)
 
         self.status_update.emit("Done!")
         self.progress.emit(100)
@@ -186,8 +213,18 @@ class SubmitWorker(QObject):
 
         self.tabs.setCurrentIndex(1)
 
+    def get_file_path(self, file, file_type):
+        # Create application folders
+        folder_path = rf"C:\Users\maxca\Desktop\tailor_my_CV\applications\{self.job_id}_{self.job_data['title']}_{self.job_data['company']}\{file_type}"
+        os.makedirs(folder_path, exist_ok=True)
+
+        file_path = rf"{folder_path}\{file}_{self.job_data['title']}_{self.job_id}_V{self.job_data['version']}.{file_type}"
+
+        return file_path
+
+
     # Save the files. Will allow different formats later
-    def save_files(self):
+    def save_files_old(self):
         # Create application folders
         self.folder_path_json = rf"C:\Users\maxca\Desktop\tailor_my_CV\applications\{self.job_id}_{self.job_data['title']}_{self.job_data['company']}\json"
         self.folder_path_docx = rf"C:\Users\maxca\Desktop\tailor_my_CV\applications\{self.job_id}_{self.job_data['title']}_{self.job_data['company']}\docx"
@@ -195,9 +232,13 @@ class SubmitWorker(QObject):
         os.makedirs(self.folder_path_json, exist_ok=True)
         os.makedirs(self.folder_path_docx, exist_ok=True)
 
-        self.file_path_CV_json = rf"{self.folder_path_json}\CV_{self.job_data['title']}_{self.job_id}_V{self.job_data['version']}.json"
         self.file_path_JobDescription_json = rf"{self.folder_path_json}\JobDescription_{self.job_data['title']}_{self.job_id}_V{self.job_data['version']}.json"
+
+        self.file_path_CV_json = rf"{self.folder_path_json}\CV_{self.job_data['title']}_{self.job_id}_V{self.job_data['version']}.json"
         self.file_path_CV_docx = rf"{self.folder_path_docx}\CV_{self.job_data['title']}_{self.job_id}_V{self.job_data['version']}.docx"
+
+        self.file_path_CL_json = rf"{self.folder_path_json}\CL_{self.job_data['title']}_{self.job_id}_V{self.job_data['version']}.json"
+        self.file_path_CL_docx = rf"{self.folder_path_docx}\CL_{self.job_data['title']}_{self.job_id}_V{self.job_data['version']}.docx"
 
         # Write the job description json file to correct location
         with open(self.file_path_JobDescription_json, "w", encoding="utf-8") as f:

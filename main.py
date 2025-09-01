@@ -44,7 +44,7 @@ if __name__ == "__main__":
             app.setStyleSheet(f.read())
 
         window = MainWindow()
-        window.showMaximized()
+        window.show()
         sys.exit(app.exec_())
     except Exception:
         traceback.print_exc()

@@ -1,0 +1,95 @@
+{
+  "title": "Quant",
+  "company": "Jane Street",
+  "deadline": "rolling",
+  "description": "We are looking for Quantitative Researchers to help us build models, strategies, and systems that price and trade financial instruments. You\u2019ll work side by side with experienced researchers who are committed to teaching, guiding, and supporting our newest hires, learning how we think about experiment design, dataset generation, time series analysis, feature engineering, and model building for financial datasets.\nAt Jane Street, our researchers, engineers, and traders sit a few feet away from each other and work together to train models, architect systems, and run trading strategies. We work with petabytes of data, a computing cluster with hundreds of thousands of cores, and a growing GPU cluster containing thousands of high-end GPUs. Depending on the day, we might be diving deep into market data, tuning hyperparameters, debugging distributed training performance, or studying how our model likes to trade in production.\nWe don\u2019t believe in \u201cone-size-fits-all\u201d modeling solutions; we are open to and excited about applying all different types of statistical and ML techniques, from linear models to deep learning, depending on what best fits a given problem. The most successful researchers will be driven by a curiosity for how their contributions fit into the larger picture of our trading operations, and how to adapt their findings into actionable strategies.\nAbout you\nIf you\u2019ve never thought about a career in finance, you\u2019re in good company. Many of us were in the same position before working here. If you have a curious mind and a passion for solving interesting problems, we have a feeling you\u2019ll fit right in. You should be:\nAble to apply logical and mathematical thinking to all kinds of problems\nIntellectually curious; eager to ask questions, admit mistakes, and learn new things \nA strong programmer who\u2019s comfortable with Python\nAn open-minded thinker and precise communicator who enjoys collaborating with colleagues from a wide range of backgrounds and areas of expertise\nFluent in English\nMost candidates will have experience with data science or machine learning, but ultimately, we\u2019re more interested in how you think and learn, than what you currently know. PhD or other research experience is a plus.",
+  "essential_requirements": [
+    "Strong programming ability with Python",
+    "Ability to apply logical and mathematical thinking to complex problems",
+    "Intellectual curiosity and eagerness to learn",
+    "Open-minded thinker and precise communicator",
+    "Comfortable collaborating with colleagues from diverse backgrounds",
+    "Fluent in English"
+  ],
+  "preferred_requirements": [
+    "Experience in data science or machine learning",
+    "Experience with time series analysis, feature engineering, and model building",
+    "Experience designing experiments and generating datasets",
+    "Experience working with large-scale data and high-performance compute (HPC/GPU) environments",
+    "PhD or other research experience",
+    "Prior exposure to financial instruments, pricing or trading (nice-to-have)"
+  ],
+  "hard_skills": [
+    "Python programming",
+    "Statistical modeling and machine learning (linear models to deep learning)",
+    "Time series analysis",
+    "Feature engineering",
+    "Experiment design and evaluation",
+    "Model selection and hyperparameter tuning",
+    "Working with large-scale datasets",
+    "Distributed training and debugging performance on clusters",
+    "Quantitative thinking for pricing and trading strategies"
+  ],
+  "soft_skills": [
+    "Intellectual curiosity and continuous learning",
+    "Clear and precise verbal/written communication",
+    "Collaborative teamwork across researchers, engineers, and traders",
+    "Willingness to ask questions and admit mistakes",
+    "Open-mindedness to multiple modeling approaches",
+    "Practical/problem-focused thinking (connecting models to production/trading)"
+  ],
+  "ATS_keywords": [
+    "Quantitative Researcher",
+    "quantitative",
+    "machine learning",
+    "data science",
+    "Python",
+    "time series analysis",
+    "feature engineering",
+    "model building",
+    "experiment design",
+    "hyperparameter tuning",
+    "distributed training",
+    "GPU",
+    "deep learning",
+    "linear models",
+    "trading strategies",
+    "financial instruments",
+    "high-performance computing",
+    "petabytes",
+    "research",
+    "PhD"
+  ],
+  "key_responsibilities": [
+    "Build models, strategies, and systems to price and trade financial instruments, adapting modeling choices to the problem (from linear models to deep learning).",
+    "Design and generate datasets, perform time series analysis and feature engineering, run experiments and tune models (including hyperparameter tuning and evaluation).",
+    "Collaborate closely with researchers, engineers, and traders to train models, debug distributed training/performance on compute/GPU clusters, and integrate models into production trading workflows."
+  ],
+  "tools_and_technologies": [
+    "Python (primary programming language)",
+    "Deep learning frameworks (e.g., PyTorch or TensorFlow \u2014 commonly used for model training)",
+    "High-performance computing clusters / distributed compute (hundreds of thousands of cores)",
+    "GPU clusters (large-scale GPU training)",
+    "Distributed training/debugging tools and orchestration (cluster schedulers / container orchestration)",
+    "Large-scale data storage and processing systems (solutions for petabyte-scale data)",
+    "Experiment tracking, version control and reproducible pipelines"
+  ],
+  "company_values": [
+    "Collaboration and proximity between researchers, engineers, and traders",
+    "Teaching, mentorship and support for new hires",
+    "Intellectual curiosity and continuous learning",
+    "Openness to diverse modeling approaches (no one-size-fits-all)",
+    "Practicality \u2014 connecting research to actionable trading strategies",
+    "Humility and candid communication (ask questions, admit mistakes)"
+  ],
+  "tailoring_recommendations": [
+    "Lead with Python and ML experience: list relevant projects, libraries used (PyTorch/TensorFlow), and concrete results (metrics, improvements).",
+    "Highlight time series, feature engineering, dataset generation, and experiment design work \u2014 give brief examples and quantitative outcomes.",
+    "If you have experience with large-scale data or GPU/HPC clusters, describe scale (data size, cluster size, speedups) and tools used for distributed training.",
+    "Emphasize collaborative work: cross-functional projects with engineers/traders, mentorship roles, or pair-programming/working in close teams.",
+    "If you have research experience (papers, thesis, PhD), summarize key contributions and relevance to modeling or trading problems.",
+    "Use ATS keywords from the job (e.g., 'quantitative', 'time series analysis', 'feature engineering', 'distributed training', 'trading strategies') throughout the CV where truthful.",
+    "Provide links to code repositories, publications, or reproducible notebooks to demonstrate technical depth and clarity of communication.",
+    "Keep descriptions outcome-focused: show how models informed decisions, improved predictions, or translated into actionable strategies."
+  ]
+}

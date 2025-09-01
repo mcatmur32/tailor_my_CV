@@ -1,0 +1,113 @@
+{
+  "title": "Graduate Software Engineer 2025",
+  "company": "SS&C",
+  "deadline": "22/08/2025",
+  "description": "As a leading financial services and healthcare technology company based on revenue, SS&C is headquartered in Windsor, Connecticut, and has 27,000+ employees in 35 countries.\nSome 20,000 financial services and healthcare organizations, from the world's largest companies to small and mid-market firms, rely on SS&C for expertise, scale, and technology.\nRole summary\nOpportunity to contribute to key areas of a leading financial services organisation, across technology and operational functions. Graduates will develop essential workplace skills, gain exposure to real-world projects, and take part in structured learning to support long-term career development.\nKey responsibilities\nSoftware Development\nWriting, testing, and debugging code in languages like .net.\nImplementing features based on requirements and design specifications.\nFollowing best coding practices and industry standards.\nLearning & Development\nGaining proficiency in relevant technologies, frameworks, and tools.\nParticipating in code reviews and feedback sessions.\nUnderstanding software development methodologies like Agile and Scrum.\nCollaboration & Communication\nWorking closely with senior developers, product managers, designers and business analysts.\nAttending team meetings and stand-ups to discuss progress.\nDocumenting code, processes, and technical findings.\nTesting & Debugging\nWriting unit and integration tests to ensure code reliability.\nDebugging and troubleshooting software issues.\nAssisting in quality assurance (QA) processes.\nVersion Control & Deployment\nUsing Git/TFS for version control.\nAssisting in Continuous Integration/Continuous Deployment (CI/CD) pipelines.\nLearning about cloud services and deployment strategies.\nProblem-Solving & Innovation\nResearching and implementing new technologies.\nIdentifying and suggesting improvements to existing codebases.\nContributing to brainstorming and problem-solving sessions.\nLearning & development\nCompletion of core learning modules, including financial services regulation, professional behaviours, and internal systems/processes.\nActive participation in technical or operational training aligned with your role (e.g., coding, data analysis, process improvement, systems training).\nRegular reviews with line managers and mentors to support continuous development.\nEncouraged to work towards relevant professional qualifications (where applicable).\nTo carry out any other duties which are within the employee's skills and abilities whenever reasonably instructed\nTechnical requirements and qualifications\nRecent graduate (or final-year student) with a degree in any discipline \u2013 STEM or business-related fields preferred for certain role.  To be expecting or have achieved a 2.2 degree classification or above. \nA strong interest in financial services and a desire to develop a career in technology, customer services or operations.\nAnalytical and problem-solving mindset, with attention to detail.\nProactive attitude with strong communication and teamwork skills.\nAbility to learn new systems and concepts quickly.\nDemonstrated adaptability and willingness to take on new challenges.\nCore requirements\nRegulatory\nSS&C Employees are required to comply with the regulatory regime in which SS&C operates as appropriate to the above role.\nEmployees are expected to exercise due care and diligence, ensuring the areas the incumbent is responsible for are organised and controlled.\nEmployees are required to observe proper standards of market, business and personal conduct, demonstrating integrity in the execution of duties.\nThe incumbent is required to respect the SS&C approach to client care and must demonstrate due regard to the interests of our clients and in any and all third-party dealings.\nTo exercise due care and diligence, ensuring the areas the role is responsible for are organised and controlled.\nTo uphold responsibilities for risk and business continuity practices as appropriate to the position the role holds within the organisation.\nTo comply with the regulatory regimes in which SS&C operates, with consideration given to relevant Client Asset, Data Protection and Financial Crime Prevention regulations, as appropriate to the above role.\nQuality\nAll employees are accountable for the delivery of a Quality service, driving for excellence in all their work activities:\nTo be quality driven, aiming for 100% accuracy and timeliness of delivery\nTo effectively plan the way services are delivered so that all activity is directly related to providing quality services and meeting the expectations of the customer (internal and external)\nTo continuously review processes and practices relating to the role and act as a catalyst for change and improvement in individual and team performance\nTo observe proper standards of market, business and personal conduct, demonstrating integrity in the execution of duties\nTo communicate and promote the values which reinforce and support a consistent quality culture\nTo ensure that monthly KPI\u2019s are met and adhered to.\nUnless explicitly requested or approached by SS&C Technologies, Inc. or any of its affiliated companies, the company will not accept unsolicited resumes from headhunters, recruitment agencies, or fee-based recruitment services.\nSS&C Technologies is an Equal Employment Opportunity employer and does not discriminate against any applicant for employment or employee on the basis of race, color, religious creed, gender, age, marital status, sexual orientation, national origin, disability, veteran status or any other classification protected by applicable discrimination laws.",
+  "essential_requirements": [
+    "Recent graduate or final-year student (expecting or achieved 2:2 degree classification or above)",
+    "Strong interest in financial services and desire to build a career in technology, customer services or operations",
+    "Analytical and problem-solving mindset with attention to detail",
+    "Proactive attitude with strong communication and teamwork skills",
+    "Ability to learn new systems and concepts quickly; demonstrated adaptability",
+    "Willingness to participate in structured learning and regular reviews with managers/mentors",
+    "Commitment to regulatory compliance, due care and diligence, and professional conduct",
+    "Quality-driven focus with aim for accuracy and meeting KPIs"
+  ],
+  "preferred_requirements": [
+    "Degree in STEM or business-related discipline (preferred for some roles)",
+    "Experience or coursework in software development (particularly .NET/C#)",
+    "Familiarity with version control systems (Git or TFS)",
+    "Awareness or experience of Agile/Scrum methodologies",
+    "Exposure to testing practices (unit and integration testing) and QA processes",
+    "Basic knowledge of CI/CD pipelines and cloud deployment concepts",
+    "Interest in working toward relevant professional qualifications",
+    "Prior internship, placement, or project experience in financial services or technology"
+  ],
+  "hard_skills": [
+    ".NET software development (coding, testing, debugging)",
+    "Unit and integration testing",
+    "Version control: Git and TFS",
+    "Continuous Integration / Continuous Deployment (CI/CD) concepts",
+    "Familiarity with cloud services and deployment strategies",
+    "Technical documentation and code-review participation",
+    "Basic QA / troubleshooting skills",
+    "Data analysis and process-improvement basics (role-dependent)"
+  ],
+  "soft_skills": [
+    "Communication (written and verbal)",
+    "Teamwork and collaboration",
+    "Proactivity and initiative",
+    "Adaptability and willingness to learn",
+    "Analytical thinking and problem-solving",
+    "Attention to detail and quality focus",
+    "Integrity and professional conduct",
+    "Time-management and meeting deadlines (KPI-driven)"
+  ],
+  "ATS_keywords": [
+    "Graduate",
+    ".NET",
+    "software development",
+    "C#",
+    "coding",
+    "testing",
+    "unit tests",
+    "integration tests",
+    "debugging",
+    "Git",
+    "TFS",
+    "CI/CD",
+    "cloud",
+    "Agile",
+    "Scrum",
+    "QA",
+    "version control",
+    "financial services",
+    "regulatory",
+    "compliance",
+    "data protection",
+    "financial crime prevention",
+    "code review",
+    "continuous improvement",
+    "KPI",
+    "problem-solving",
+    "teamwork",
+    "communication",
+    "professional qualifications"
+  ],
+  "key_responsibilities": [
+    "Develop software features: write, test and debug code (notably .NET), implement features from requirements/design and follow best coding practices.",
+    "Collaborate with cross-functional teams: work with senior developers, product managers, designers and business analysts; attend stand-ups and document code/processes.",
+    "Support testing and delivery: write unit/integration tests, assist QA processes, use Git/TFS for version control and support CI/CD and cloud deployment activities."
+  ],
+  "tools_and_technologies": [
+    ".NET (development frameworks/languages)",
+    "Git",
+    "TFS (Team Foundation Server)",
+    "Unit/integration testing frameworks (role-appropriate)",
+    "CI/CD toolchains/pipelines",
+    "Cloud services (unspecified \u2014 cloud deployment concepts)",
+    "IDE/tools for .NET development (e.g., Visual Studio) \u2014 implied",
+    "Issue trackers and Agile tooling (e.g., Jira) \u2014 implied"
+  ],
+  "company_values": [
+    "Client care and acting in clients' best interests",
+    "Integrity and proper standards of market, business and personal conduct",
+    "Regulatory compliance and due diligence",
+    "Quality-driven mindset (accuracy, timeliness, KPI focus)",
+    "Continuous learning and professional development",
+    "Collaboration and teamwork",
+    "Equal opportunity and non-discrimination"
+  ],
+  "tailoring_recommendations": [
+    "Lead with education: state degree, classification (2:2 or above) and relevant modules (STEM/business coursework as applicable).",
+    "Feature relevant technical projects or internships using .NET/C#, including links to GitHub or code samples where possible.",
+    "List specific experience with Git or TFS, unit/integration testing, CI/CD or cloud concepts \u2014 even academic or lab experience counts.",
+    "Demonstrate Agile/Scrum exposure (team projects, roles, ceremonies attended) and participation in code reviews.",
+    "Include measurable outcomes: e.g., reduced defects, improved test coverage, delivery times, or KPI achievements.",
+    "Use ATS keywords from the job description in your summary, skills and project bullet points (e.g., .NET, Git, CI/CD, Agile, testing, financial services).",
+    "Showcase soft skills with short examples: teamwork (group projects), problem-solving (bug fixed or process improved), adaptability (new tech learned quickly).",
+    "Mention interest in financial services and awareness of regulatory/compliance responsibilities (data protection, client care).",
+    "If working towards professional qualifications, list them and expected completion dates; if not, state willingness to pursue.",
+    "Keep formatting ATS-friendly: simple headings, bullet points, no images or complex tables, and save as a PDF or DOCX as requested."
+  ]
+}
