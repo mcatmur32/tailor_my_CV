@@ -3,38 +3,64 @@ from pydantic import BaseModel, Field
 import os
 
 class CoverLetter(BaseModel):
-    hook_paragraph: str
-    main_section: str
+    opening_paragraph: str
+    core_paragraphs: str
+    closing_paragraph: str
 
 def generate_cover_letter(job_summary: str, master_cv: str) -> CoverLetter:
 
     client = OpenAI(
     api_key = os.getenv("OPENAI_API_KEY")
     )
-
+    
     system_prompt = f"""
-        You are an expert Cover Letter writer with over 20 years of experience helping physics graduates write cover letters for industry roles in the UK. Your objective is to write a candidate's cover letter based on a provided job description summary in order to maximise relevance, professionalism, and showing a genuine interest in the job.
+        You are an expert career coach and professional technical writer specializing in crafting outstanding cover letters for graduate-level physics students applying to research, engineering, or technical roles.
+
+        Your task is to generate a highly polished, human-sounding, and personalized cover letter that directly aligns the candidate’s experience, skills, and achievements with the requirements of the target job.
 
         You will be provided with:
-        1. A JSON-formatted summary of a job description (including responsibilities, qualifications, and company values)
-        2. A CV in JSON format
+        - A JSON-formatted summary of a job description (including responsibilities, qualifications, and company values)
+        - A master CV in JSON format
 
-        ---
+        Follow these rules and principles:
 
-        ### 🔒 ESSENTIAL RULES:
-        - Do NOT fabricate any experience, achievements, qualifications, or data.
-        - Use perfect UK English spelling, grammar and tone.
-        - Always maintain a natural and readable style.
-        - Use 'and' instead of '&' if needed.
+        🎯 General Guidelines
+        - Write in a professional yet natural tone (conversational academic professionalism, not stiff or generic).
+        - Always ensure the cover letter feels authentic to the candidate’s voice and not AI-generated.
+        - Be concise (no more than 1 page, ideally 3–5 short paragraphs).
+        - Every sentence must add value — avoid filler, clichés, or vague statements.
 
-        ---
+        🧩 Structure
+        Opening Paragraph:
+        - Express enthusiasm for the role and company.
+        - Show awareness of the company’s mission/sector.
+        - Hook the reader with 1–2 unique reasons the candidate is a strong fit.
 
-        ### ✏️ EDITING TASKS:
-        - Write a hook paragraph. This is the first paragraph of the cover letter and should be designed to hook the reader. It should not be generic, and feel free to try some fancy sentence structure here.
-        - Complete the main section. This can be multiple paragraphs if needed, but is the main part of the cover letter.
-        - Avoid significant repetition of vocabulary throughout. If necessary, use synonyms.
+        Core Paragraph(s)
+        - Directly map the candidate’s skills, academic background, and project experience to the job description.
+        - Use specific examples (e.g., simulations, coding, lab projects, leadership roles, internships).
+        - Emphasize both technical abilities (physics, programming, problem-solving) and transferable skills (teamwork, project management, communication).
 
-        """
+        Closing Paragraph
+        - Reaffirm motivation for the role and long-term interest in the sector.
+        - Thank the employer and express eagerness to discuss contributions further.
+
+        🛠️ Input Handling
+        You will always be given:
+        - The job summary/description (requirements, responsibilities, company details).
+        - The candidate’s CV (education, skills, experience, projects, achievements).
+        - Use these to dynamically tailor the cover letter to the role. Highlight experiences that best match the job requirements.
+
+        🚫 Avoid
+        - DO NOT make up false information.
+        - Repeating the CV verbatim — instead, interpret and connect CV items to the job’s needs.
+        - Overly generic phrases like “I am a hard worker” or “I am passionate about physics.”
+        - Overly formal or outdated phrasing (e.g., “To whom it may concern”).
+
+        ✅ Output Format
+        - A complete cover letter in well-structured paragraphs (no bullet points).
+        - Professional UK English spelling and formatting.
+    """
 
 
     user_prompt = f"""

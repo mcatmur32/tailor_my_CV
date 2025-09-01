@@ -26,7 +26,7 @@ class JobTable(QTableWidget):
       4: CV File (QPushButton)
       5: Delete (QPushButton)
     """
-    HEADERS = ["Company", "Job Title", "Deadline", "Status", "CV Word Doc", "Delete Application"]
+    HEADERS = ["Company", "Job Title", "Deadline", "Status", "CV Word Doc", "CL Word Doc", "Delete Application"]
     
 
     def __init__(self, db: Database, parent=None):
@@ -44,8 +44,9 @@ class JobTable(QTableWidget):
         header = self.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.Stretch)
         # Give the button columns a reasonable fixed width
-        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Open
-        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # Delete
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Open CV
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # Open CL
+        header.setSectionResizeMode(6, QHeaderView.ResizeToContents)  # Delete
 
         self.load_data()
 
@@ -87,13 +88,21 @@ class JobTable(QTableWidget):
             #file_item.setToolTip(CV_file_path)  # hover to see full path
             #self.setItem(r, 4, file_item)
 
-            # Open button
-            open_btn = QPushButton("Open CV")
-            open_btn.setProperty("app_id", app_id)
-            open_btn.clicked.connect(
-                lambda _, b=open_btn: self.on_open_clicked(b.property("app_id"))
+            # Open CV button
+            open_CV_btn = QPushButton("Open CV")
+            open_CV_btn.setProperty("app_id", app_id)
+            open_CV_btn.clicked.connect(
+                lambda _, b=open_CV_btn: self.on_open_CV_clicked(b.property("app_id"))
             )
-            self.setCellWidget(r, 4, open_btn)
+            self.setCellWidget(r, 4, open_CV_btn)
+
+            # Open CL button
+            open_CL_btn = QPushButton("Open Cover Letter")
+            open_CL_btn.setProperty("app_id", app_id)
+            open_CL_btn.clicked.connect(
+                lambda _, b=open_CL_btn: self.on_open_CL_clicked(b.property("app_id"))
+            )
+            self.setCellWidget(r, 5, open_CL_btn)
 
             # Delete button
             del_btn = QPushButton("Delete")
@@ -101,7 +110,7 @@ class JobTable(QTableWidget):
             del_btn.clicked.connect(
                 lambda _, b=del_btn: self.on_delete_clicked(b.property("app_id"))
             )
-            self.setCellWidget(r, 5, del_btn)
+            self.setCellWidget(r, 6, del_btn)
 
         # Cosmetic: align text columns a bit nicer
         for c in (0, 1, 2, 4):
@@ -116,8 +125,16 @@ class JobTable(QTableWidget):
         # You could show a non-blocking toast/snackbar in a fancier UI.
         # Here we keep it quiet to avoid spamming dialogs.
 
-    def on_open_clicked(self, app_id: int):
+    def on_open_CV_clicked(self, app_id: int):
         path = self.db.get_CV_file_path(app_id)
+        if not path or not os.path.exists(path):
+            QMessageBox.warning(self, "File not found",
+                                "No file found for this entry.\n\nPath:\n" + (path or "<empty>"))
+            return
+        QDesktopServices.openUrl(QUrl.fromLocalFile(path))
+
+    def on_open_CL_clicked(self, app_id: int):
+        path = self.db.get_CL_file_path(app_id)
         if not path or not os.path.exists(path):
             QMessageBox.warning(self, "File not found",
                                 "No file found for this entry.\n\nPath:\n" + (path or "<empty>"))

@@ -26,7 +26,8 @@ class Database:
                 role TEXT NOT NULL,
                 deadline TEXT NOT NULL,
                 status TEXT NOT NULL,
-                CV_file_path TEXT
+                CV_file_path TEXT,
+                CL_file_path TEXT
             )
         ''')
         self.conn.commit()
@@ -38,22 +39,22 @@ class Database:
             today = date.today().isoformat()
             samples = [
                 ("SpaceTech Ltd", "RF Graduate Engineer", today, "Submitted",
-                 os.path.join(os.getcwd(), "SpaceTech_RF_CoverLetter.pdf")),
+                 os.path.join(os.getcwd(), "SpaceTech_RF_CoverLetter.pdf"), os.path.join(os.getcwd(), "SpaceTech_RF_CoverLetter.pdf")),
                 ("PhotonWorks", "Applied Physicist (DFT)", today, "Draft",
-                 os.path.join(os.getcwd(), "PhotonWorks_DFT_Notes.pdf")),
+                 os.path.join(os.getcwd(), "PhotonWorks_DFT_Notes.pdf"), os.path.join(os.getcwd(), "SpaceTech_RF_CoverLetter.pdf")),
                 ("Aerosys", "Seeker Algorithms Intern", today, "Interview",
-                 os.path.join(os.getcwd(), "Aerosys_Interview_Prep.pdf")),
+                 os.path.join(os.getcwd(), "Aerosys_Interview_Prep.pdf"), os.path.join(os.getcwd(), "SpaceTech_RF_CoverLetter.pdf")),
             ]
             self.conn.executemany("""
-                INSERT INTO applications (company, role, deadline, status, CV_file_path)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO applications (company, role, deadline, status, CV_file_path, CL_file_path)
+                VALUES (?, ?, ?, ?, ?, ?)
             """, samples)
             self.conn.commit()
 
     # --- CRUD-ish methods ---
     def fetch_all(self):
         cur = self.conn.execute("""
-            SELECT id, company, role, deadline, status, CV_file_path
+            SELECT id, company, role, deadline, status, CV_file_path, CL_file_path
             FROM applications
             ORDER BY id DESC
         """)
@@ -65,8 +66,12 @@ class Database:
         self.conn.commit()
         return cur.lastrowid
     
-    def add_file_path(self, app_id: int, CV_file_path: str):
+    def add_CV_file_path(self, app_id: int, CV_file_path: str):
         self.conn.execute("UPDATE applications SET CV_file_path=? WHERE id=?", (CV_file_path, app_id))
+        self.conn.commit()
+
+    def add_CL_file_path(self, app_id: int, CL_file_path: str):
+        self.conn.execute("UPDATE applications SET CL_file_path=? WHERE id=?", (CL_file_path, app_id))
         self.conn.commit()
 
     def update_status(self, app_id: int, new_status: str):
@@ -80,10 +85,10 @@ class Database:
     def get_CV_file_path(self, app_id: int):
         cur = self.conn.execute("SELECT CV_file_path FROM applications WHERE id=?", (app_id,))
         row = cur.fetchone()
-        #return None if row is None else row["CV_file_path"]
-        return row["CV_file_path"]
+        return None if row is None else row["CV_file_path"]
+        #return row["CV_file_path"]
     
-    def get_cover_letter_file_path(self, app_id: int):
-        cur = self.conn.execute("SELECT cover_letter_file_path FROM applications WHERE id=?", (app_id,))
+    def get_CL_file_path(self, app_id: int):
+        cur = self.conn.execute("SELECT CL_file_path FROM applications WHERE id=?", (app_id,))
         row = cur.fetchone()
-        return None if row is None else row["cover_letter_file_path"]
+        return None if row is None else row["CL_file_path"]

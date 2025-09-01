@@ -179,7 +179,7 @@ class SubmitWorker(QObject):
             generate_docx(self.file_path_CV_docx, "templates/cv_template.docx", self.file_path_CV_json)
 
             # Update the database to include the link to the docx file (for button functionality)
-            self.db.add_file_path(self.job_id, self.file_path_CV_docx)
+            self.db.add_CV_file_path(self.job_id, self.file_path_CV_docx)
 
         # Perform if CL checkbox ticked
         if self.job_data["cover_letter_checkbox"]:
@@ -197,6 +197,9 @@ class SubmitWorker(QObject):
 
             # Generate word document template
             generate_docx(self.file_path_CL_docx, "templates/CL_template.docx", self.file_path_CL_json)
+
+            # Update the database to include the link to the docx file (for button functionality)
+            self.db.add_CL_file_path(self.job_id, self.file_path_CL_docx)
 
         self.status_update.emit("Saving...")
         self.progress.emit(90)
