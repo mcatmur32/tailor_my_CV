@@ -5,8 +5,8 @@ import sqlite3
 from PyQt5.QtWidgets import QLineEdit, QTextEdit, QWidget, QTabWidget, QPushButton, QVBoxLayout, QHBoxLayout, QCheckBox, QMessageBox, QProgressBar
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 
-from AI_queries.generate_cv import generate_cv
 from AI_queries.summarise_job import summarise_job
+from AI_queries.generate_cv import generate_cv
 from AI_queries.generate_cover_letter import generate_cover_letter
 from file_generation.generate_docx import generate_docx
 
@@ -141,6 +141,9 @@ class SubmitWorker(QObject):
     def run(self):
         self.db = Database(self.db_path)
 
+        # Insert the new entry into the database, and get back the entry id (for file saving purposes)
+        self.job_id = self.db.new_entry(self.job_data["company"], self.job_data["title"], self.job_data["deadline"], self.job_data["status"])
+
         # Get the AI job summary
         self.status_update.emit("Analysing job description...")
         self.progress.emit(10)
@@ -149,18 +152,19 @@ class SubmitWorker(QObject):
         # Merge the manually entered job data and the AI-inferred information
         self.job_summary = {k: v for k, v in self.job_data.items() if k in ["title", "company", "deadline", "description"]} | self.job_summary
 
+        # Add JD file path to database
+        self.JD_file_path = self.get_file_path("JD", "json")
+        self.db.add_JD_file_path(self.job_id, self.JD_file_path)
+
+        # Write the job description json file to correct location
+        with open(self.JD_file_path, "w", encoding="utf-8") as f:
+            f.write(json.dumps(self.job_summary, indent=2))
+
         # Open the Master CV file (will add file uploader to form later)
         with open('inputs/master_cv.json', 'r', encoding="utf-8") as f:
             self.master_cv = json.dumps(json.load(f))
 
         self.progress.emit(50)
-
-        # Insert the new entry into the database, and get back the entry id (for file saving purposes)
-        self.job_id = self.db.new_entry(self.job_data["company"], self.job_data["title"], self.job_data["deadline"], self.job_data["status"])
-
-        # Write the job description json file to correct location
-        with open(self.get_file_path("JobDescription", "json"), "w", encoding="utf-8") as f:
-            f.write(json.dumps(self.job_summary, indent=2))
 
         # Perform if CV checkbox ticked
         if self.job_data["CV_checkbox"]:
@@ -186,7 +190,7 @@ class SubmitWorker(QObject):
             # Get the new AI CL
             self.status_update.emit("Generating Cover Letter...")
             self.progress.emit(75)
-            self.new_cover_letter = generate_cover_letter(self.job_summary, self.master_cv)
+            self.new_cover_letter = generate_cover_letter(self.job_summary, self.master_cv, False)
 
             self.file_path_CL_json = self.get_file_path("CL", "json")
             self.file_path_CL_docx = self.get_file_path("CL", "docx")
@@ -216,7 +220,7 @@ class SubmitWorker(QObject):
 
         self.tabs.setCurrentIndex(1)
 
-    def get_file_path(self, file, file_type):
+    def get_file_path(self, file: str, file_type: str):
         # Create application folders
         folder_path = rf"C:\Users\maxca\Desktop\tailor_my_CV\applications\{self.job_id}_{self.job_data['title']}_{self.job_data['company']}\{file_type}"
         os.makedirs(folder_path, exist_ok=True)

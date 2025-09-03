@@ -26,7 +26,7 @@ class JobTable(QTableWidget):
       4: CV File (QPushButton)
       5: Delete (QPushButton)
     """
-    HEADERS = ["Company", "Job Title", "Deadline", "Status", "CV Word Doc", "CL Word Doc", "Delete Application"]
+    HEADERS = ["Company", "Job Title", "Deadline", "Status", "CV Word Doc", "Cover Letter Word Doc", "Delete Application"]
     
 
     def __init__(self, db: Database, parent=None):
@@ -62,7 +62,6 @@ class JobTable(QTableWidget):
             role = rec["role"]
             deadline = rec["deadline"]
             status = rec["status"]
-            #CV_file_path = rec["CV_file_path"]
 
             # Plain text cells
             self.setItem(r, 0, QTableWidgetItem(company))
@@ -82,22 +81,34 @@ class JobTable(QTableWidget):
             )
             self.setCellWidget(r, 3, combo)
 
-            # File (just display basename)
-            # basename = os.path.basename(CV_file_path) if CV_file_path else ""
-            #file_item = QTableWidgetItem(CV_file_path)
-            #file_item.setToolTip(CV_file_path)  # hover to see full path
-            #self.setItem(r, 4, file_item)
+            # CV button
+            if self.db.get_CV_file_path(app_id) == None:
+                open_CV_btn = QPushButton("Generate CV")
+                open_CV_btn.setStyleSheet("background-color: #FFFFE0; color: black;")
+                open_CV_btn.setDisabled(True)
+                open_CV_btn.setProperty("CV_exist", False)
+            else:
+                open_CV_btn = QPushButton("Open CV")
+                open_CV_btn.setStyleSheet("background-color: #90EE90; color: black;")
+                open_CV_btn.setProperty("CV_exist", True)
 
-            # Open CV button
-            open_CV_btn = QPushButton("Open CV")
             open_CV_btn.setProperty("app_id", app_id)
             open_CV_btn.clicked.connect(
                 lambda _, b=open_CV_btn: self.on_open_CV_clicked(b.property("app_id"))
             )
             self.setCellWidget(r, 4, open_CV_btn)
 
-            # Open CL button
-            open_CL_btn = QPushButton("Open Cover Letter")
+            # Cover Letter button
+            if self.db.get_CL_file_path(app_id) == None:
+                open_CL_btn = QPushButton("Generate Cover Letter")
+                open_CL_btn.setStyleSheet("background-color: #FFFFE0; color: black;")
+                open_CL_btn.setDisabled(True)
+                open_CL_btn.setProperty("CL_exist", False)
+            else:
+                open_CL_btn = QPushButton("Open Cover Letter")
+                open_CL_btn.setStyleSheet("background-color: #90EE90; color: black;")
+                open_CL_btn.setProperty("CL_exist", True)
+              
             open_CL_btn.setProperty("app_id", app_id)
             open_CL_btn.clicked.connect(
                 lambda _, b=open_CL_btn: self.on_open_CL_clicked(b.property("app_id"))

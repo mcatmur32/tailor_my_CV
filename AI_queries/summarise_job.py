@@ -4,10 +4,6 @@ import os
 
 # Defines the job summary json format outputted by the AI
 class JobDescriptor(BaseModel):
-    #job_title: str
-    #company_name: str
-    #industry: str
-    #location: str
     essential_requirements: list[str]
     preferred_requirements: list[str]
     hard_skills: list[str]
@@ -28,9 +24,7 @@ def summarise_job (description: str) -> JobDescriptor:
 
     
 
-    # Prompt passed into the AI
-    prompt = "Given the following job description, extract key information from it and return it in the format specified. \nUse natural language understanding to infer values, tone, responsibilities, and include recommended tailoring strategies even if not explicitly stated, as well as some ATS-friendly keywords/phrases someone should include in their CV when applying to this job. Here is the job description:\n\n" + description
-    
+    # Prompt passed into the AI    
     system_prompt = f"""
         You are an expert job description analyst with over 20 years of experience. You will be given a job description, and you must summarise it as follows:
 
@@ -44,7 +38,7 @@ def summarise_job (description: str) -> JobDescriptor:
 
     """
 
-    user_propmpt = f"""
+    user_prompt = f"""
         Here is the job description for summarising:
 
         ---
@@ -58,16 +52,13 @@ def summarise_job (description: str) -> JobDescriptor:
         model="gpt-5-mini",
         input = [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_propmpt}
+            {"role": "user", "content": user_prompt}
         ],
         text_format = JobDescriptor
     )
 
     # Get the output
     job_summary = response.output_parsed
-
-    # job_summary = output.json(indent=2)
-    # job_summary = json.dumps(output.model_dump(), indent=2)
 
     return job_summary
 
