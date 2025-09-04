@@ -161,7 +161,7 @@ class SubmitWorker(QObject):
             f.write(json.dumps(self.job_summary, indent=2))
 
         # Open the Master CV file (will add file uploader to form later)
-        with open('inputs/master_cv.json', 'r', encoding="utf-8") as f:
+        with open(rf"C:\Users\maxca\Desktop\applications\master_cv.json", 'r', encoding="utf-8") as f:
             self.master_cv = json.dumps(json.load(f))
 
         self.progress.emit(50)
@@ -222,7 +222,7 @@ class SubmitWorker(QObject):
 
     def get_file_path(self, file: str, file_type: str):
         # Create application folders
-        folder_path = rf"C:\Users\maxca\Desktop\tailor_my_CV\applications\{self.job_id}_{self.job_data['title']}_{self.job_data['company']}\{file_type}"
+        folder_path = rf"C:\Users\maxca\Desktop\applications\{self.job_id}_{self.job_data['title']}_{self.job_data['company']}\{file_type}"
         os.makedirs(folder_path, exist_ok=True)
 
         file_path = rf"{folder_path}\{file}_{self.job_data['title']}_{self.job_id}_V{self.job_data['version']}.{file_type}"
